@@ -66,3 +66,10 @@ fix:3 #
    - docker network create micro-net
    - docker run -d --name eureka --network micro-net -p 8761:8761 eureka-image (run eureka image)
    - docker run -d --name config --network micro-net -e EUREKA_SERVER_ADDRESS=http://eureka:8761/eureka peacecoder/config-server
+
+
+
+docker build -t peacecoder/server-gateway:latest .
+docker run -dp 8001:8001 --add-host=host.docker.internal:host-gateway -e CONFIG_SERVER_URL=host.docker.internal -e EUREKA_SERVER_ADDRESS=http://host.docker.internal:8761/eureka --name server-gateway peacecoder/server-gateway
+
+docker run -dp 8001:8001 --add-host=host.docker.internal:host-gateway -e CONFIG_SERVER_URL=http://host.docker.internal:8002 -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8761/eureka --name server-gateway peacecoder/server-gateway
