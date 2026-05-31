@@ -52,3 +52,7 @@ docker system prune --volumes
 docker system prune -a --volumes
 docker system prune -a --volumes -f
 
+
+##
+docker build -t peacecoder/base-server:0.0.1 .
+docker run -dp 8761:8761 --name base-server peacecoder/base-server:0.0.1
