@@ -1,0 +1,54 @@
+sudo apt update
+sudo apt install docker.io -y
+
+docker --version
+
+sudo systemctl start docker                                     //--    start docker 
+
+sudo systemctl enable docker                                    //--    enable on boot
+
+sudo usermod -aG docker $USER                                   //--    run without sudo(root)
+
+
+
+docker run hello-world                                          //--    download image and run image
+
+
+docker pull openjdk:17
+docker images
+
+
+docker rmi IMAGE_ID                                             //--    remove image by IMAGE_ID
+
+
+docker run openjdk:17
+docker run -d nginx                                             //--    run in detach mood
+docker run -p 8080:8080 myapp                                   //--    run with port mapping (HostPort:ContainerPort)
+docker run redis:latest                                         //--    repository:tag 
+docker run --name redis-latest                                  //--    uniuqe (id, name) 
+                                                                //--    [won't use build in adj + scientist name] 
+
+docker ps                                                       //--    show running container list
+docker ps -a                                                    //--    show all container list
+
+docker stop CONTAINER_ID
+docker start CONTAINER_ID
+docker rm CONTAINER_ID
+docker logs CONTAINER_ID
+docker logs -f my-container                                     //--    follow logs live 
+docker exec -it CONTAINER_ID bash                               //--    execute command inside container
+docker exec -it latestradies /bin/sh
+docker inspect CONTAINER_ID                                     //--    shows (ip, ports, env, mounts)
+docker stats                                                    //--    shows (cpu, memory, network usage)
+
+docker --help
+
+
+docker system prune
+docker system prune -f
+docker system prune -a
+docker system prune -af 
+docker system prune --volumes
+docker system prune -a --volumes
+docker system prune -a --volumes -f
+

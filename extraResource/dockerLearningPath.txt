@@ -1,0 +1,19 @@
+# Recommended Learning Path
+
+    ## Beginner
+        - Learn Docker basics
+        - Run containers
+        - Build Dockerfile
+        - Containerize Spring Boot app
+
+    ## Intermediate
+        - Docker Compose
+        - Multi-stage builds
+        - Environment variables
+        - Volumes & networking
+    
+    ## Advanced
+        - JIB
+        - Kubernetes
+        - CI/CD pipelines
+        - Observability stack
