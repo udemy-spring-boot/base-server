@@ -56,3 +56,13 @@ docker system prune -a --volumes -f
 ##
 docker build -t peacecoder/base-server:0.0.1 .
 docker run -dp 8761:8761 --name base-server peacecoder/base-server:0.0.1
+
+docker build -t peacecoder/config-server:0.0.1 -t peacecoder/config-server:latest .
+docker run -dpe 8002:8002 EUREKA_SERVER_ADDRESS=http://host.docker.internal:8761/eureka --name config-server peacecoder/config-server
+
+fix:1 # docker run -dp 8002:8002 --add-host=host.docker.internal:host-gateway -e EUREKA_SERVER_ADDRESS=http://host.docker.internal:8761/eureka --name config-server peacecoder/config-server
+fix:2 # docker run -dp 8002:8002 --network=host --name config-server peacecoder/config-server
+fix:3 #
+   - docker network create micro-net
+   - docker run -d --name eureka --network micro-net -p 8761:8761 eureka-image (run eureka image)
+   - docker run -d --name config --network micro-net -e EUREKA_SERVER_ADDRESS=http://eureka:8761/eureka peacecoder/config-server
