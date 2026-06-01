@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+
+  base-server:
+    image: mynuddinratul/base-server:latest
+    container_name: base-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    networks:
+      - micro-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  config-server:
+    image: mynuddinratul/config-server:latest
+    container_name: config-server
+    ports:
+      - "8002:8002"
+    environment:
+      - EUREKA_SERVER_ADDRESS=http://base-server:8761/eureka
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      base-server:
+        condition: service_healthy
+    networks:
+      - micro-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8002/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server-gateway:
+    image: mynuddinratul/server-gateway:latest
+    container_name: server-gateway
+    ports:
+      - "8001:8001"
+    environment:
+      - CONFIG_SERVER_URL=http://config-server:8002
+      - EUREKA_SERVER_ADDRESS=http://base-server:8761/eureka
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://base-server:8761/eureka
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      config-server:
+        condition: service_healthy
+      base-server:
+        condition: service_healthy
+    networks:
+      - micro-net
+
+networks:
+  micro-net:
+    driver: bridge

@@ -73,3 +73,12 @@ docker build -t peacecoder/server-gateway:latest .
 docker run -dp 8001:8001 --add-host=host.docker.internal:host-gateway -e CONFIG_SERVER_URL=host.docker.internal -e EUREKA_SERVER_ADDRESS=http://host.docker.internal:8761/eureka --name server-gateway peacecoder/server-gateway
 
 docker run -dp 8001:8001 --add-host=host.docker.internal:host-gateway -e CONFIG_SERVER_URL=http://host.docker.internal:8002 -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8761/eureka --name server-gateway peacecoder/server-gateway
+
+
+docker network create micro-net
+docker run -d --name base-server --network micro-net -p 8761:8761 mynuddinratul/base-server:latest
+docker run -d --name config-server --network micro-net -e EUREKA_SERVER_ADDRESS=http://base-server:8761/eureka mynuddinratul/config-server:latest
+docker run -d --name server-gateway --network micro-net -p 8001:8001 -e EUREKA_SERVER_ADDRESS=http://base-server:8761/eureka -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://base-server:8761/eureka -e CONFIG_SERVER_URL=http://config-server:8002 mynuddinratul/server-gateway:latest
+
+
+docker-compose -f docker-compose.yml up -d
